@@ -1,0 +1,27 @@
+# Render Blueprint: free Docker web service for the Wayfarer backend (demo only;
+# the free plan's disk resets on restart, so the app re-seeds itself on startup).
+services:
+  - type: web
+    name: wayfarer-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3-flash-preview
+      - key: GEMINI_FALLBACK_MODELS
+        value: gemini-3.5-flash-lite,gemini-flash-lite-latest
+      - key: GEMINI_EMBEDDING_MODEL
+        value: gemini-embedding-001
+      - key: APP_ORIGIN
+        sync: false
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: SEED_ADMIN_EMAIL
+        sync: false
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: SEED_DOCUMENTS_DIR
+        value: /app/samples

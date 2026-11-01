@@ -22,9 +22,33 @@ from .errors import describe
 passwords = PasswordHasher()
 def uid(): return uuid.uuid4().hex
 
+def seed():
+    """Demo hosting often has a disk that resets on restart. When configured,
+    recreate the admin account and queue the sample documents on startup."""
+    email, password = os.getenv('SEED_ADMIN_EMAIL', '').strip().lower(), os.getenv('SEED_ADMIN_PASSWORD', '')
+    if email and password:
+        with connect() as db:
+            exists = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
+        if not exists:
+            create_user(Registration(email=email, name=os.getenv('SEED_ADMIN_NAME', 'Agency admin'), password=password), role='admin')
+    folder = os.getenv('SEED_DOCUMENTS_DIR', '')
+    if folder and Path(folder).is_dir():
+        with connect() as db:
+            if db.execute("SELECT COUNT(*) FROM documents WHERE status!='deleted'").fetchone()[0]:
+                return
+            uploads = DATA / 'uploads'
+            uploads.mkdir(parents=True, exist_ok=True)
+            for source in sorted(Path(folder).glob('[0-9]*.md')):
+                identity = uid()
+                target = uploads / (identity + '.md')
+                target.write_bytes(source.read_bytes())
+                db.execute('INSERT INTO documents(id,name,path,status,created) VALUES(?,?,?,?,?)', (identity, source.name, str(target), 'queued', time.time()))
+                db.execute('INSERT INTO jobs VALUES(?,?,?)', (uid(), identity, 'queued'))
+
 @asynccontextmanager
 async def lifespan(app):
     init()
+    seed()
     stop = threading.Event()
     thread = threading.Thread(target=rag.worker, args=(stop,), daemon=True)
     if os.getenv('DISABLE_WORKER') != '1':

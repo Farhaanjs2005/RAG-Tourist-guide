@@ -8,3 +8,7 @@ frontend/dist
 .pytest_cache
 **/.npm-cache
 .pip-cache
+**/data
+.claude
+pytest-cache-files-*
+tmp*
