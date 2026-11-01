@@ -1,0 +1,18 @@
+import React from 'react';
+const icon=(children)=>function Icon({size=24,...props}){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{children}</svg>};
+export const Compass=icon(<><circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5Z"/></>);
+export const ArrowUpRight=icon(<path d="M7 17 17 7M7 7h10v10"/>);
+export const ArrowUp=icon(<path d="m6 11 6-6 6 6M12 5v14"/>);
+export const Plus=icon(<path d="M12 5v14M5 12h14"/>);
+export const MessageSquare=icon(<path d="M4 4h16v12H8l-4 4Z"/>);
+export const LogOut=icon(<path d="M10 4H4v16h6m5-12 4 4-4 4M9 12h10"/>);
+export const FileText=icon(<><path d="M5 3h9l5 5v13H5Zm9 0v5h5M8 12h8M8 16h6"/></>);
+export const Users=icon(<><circle cx="9" cy="8" r="3"/><path d="M3 20v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/></>);
+export const Trash2=icon(<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>);
+export const RefreshCw=icon(<path d="M20 9a8 8 0 0 0-14-4L3 8m0-5v5h5M4 15a8 8 0 0 0 14 4l3-3m0 5v-5h-5"/>);
+export const Upload=icon(<path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/>);
+export const MapPin=icon(<><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2"/></>);
+export const X=icon(<path d="m6 6 12 12M6 18 18 6"/>);
+export const BookOpen=icon(<path d="M12 5v16M12 5C8 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-2-1-6-2-10 1Z"/>);
+export const ShieldCheck=icon(<><path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6Z"/><path d="m8 12 3 3 5-6"/></>);
+export const LoaderCircle=icon(<path d="M21 12a9 9 0 1 1-9-9"/>);

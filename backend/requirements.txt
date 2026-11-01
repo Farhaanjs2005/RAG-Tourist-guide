@@ -1,0 +1,10 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+python-multipart>=0.0.20,<1
+python-dotenv>=1,<2
+google-genai>=1.0,<2
+chromadb>=1.0,<2
+pypdf>=5,<7
+argon2-cffi>=23,<26
+pytest>=8,<10
+httpx>=0.28,<1
