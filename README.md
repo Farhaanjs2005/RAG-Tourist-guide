@@ -49,7 +49,7 @@ For a single-server local build, run `npm run build` in `frontend`, set `APP_ORI
 | `GEMINI_FALLBACK_MODELS` | `gemini-3.5-flash-lite,gemini-flash-lite-latest`; tried in order when the main model is out of free quota, times out, or returns invalid citations |
 | `GEMINI_EMBEDDING_MODEL` | `gemini-embedding-001`, 768-dimensional retrieval embeddings |
 | `DATA_DIR` | `./data`; SQLite, uploads, Chroma |
-| `APP_ORIGIN` | `http://localhost:5173` in code; example Docker env uses port 8000 |
+| `APP_ORIGIN` | Comma-separated allowed browser origins, e.g. `https://wayfarer-api-k66p.onrender.com,https://your-app.vercel.app`. `http://localhost:5173` in code; example Docker env uses port 8000 |
 | `COOKIE_SECURE` | `0` for local HTTP; set `1` behind HTTPS |
 
 Changing embedding models requires rebuilding the index; incompatible models are rejected rather than silently mixed. Back up the entire data directory with the app stopped to keep SQLite, uploads, and Chroma consistent. Documents and questions are sent to Gemini for AI processing.

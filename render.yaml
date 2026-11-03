@@ -23,5 +23,10 @@ services:
         sync: false
       - key: SEED_ADMIN_PASSWORD
         sync: false
+      # Optional demo traveller recreated on every restart (free disk resets).
+      - key: SEED_USER_EMAIL
+        sync: false
+      - key: SEED_USER_PASSWORD
+        sync: false
       - key: SEED_DOCUMENTS_DIR
         value: /app/samples

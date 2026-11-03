@@ -24,13 +24,14 @@ def uid(): return uuid.uuid4().hex
 
 def seed():
     """Demo hosting often has a disk that resets on restart. When configured,
-    recreate the admin account and queue the sample documents on startup."""
-    email, password = os.getenv('SEED_ADMIN_EMAIL', '').strip().lower(), os.getenv('SEED_ADMIN_PASSWORD', '')
-    if email and password:
-        with connect() as db:
-            exists = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
-        if not exists:
-            create_user(Registration(email=email, name=os.getenv('SEED_ADMIN_NAME', 'Agency admin'), password=password), role='admin')
+    recreate the admin (and optional demo traveller) accounts and queue the sample documents on startup."""
+    for prefix, role, name in (('SEED_ADMIN', 'admin', 'Agency admin'), ('SEED_USER', 'user', 'Demo traveller')):
+        email, password = os.getenv(prefix + '_EMAIL', '').strip().lower(), os.getenv(prefix + '_PASSWORD', '')
+        if email and password:
+            with connect() as db:
+                exists = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
+            if not exists:
+                create_user(Registration(email=email, name=os.getenv(prefix + '_NAME', name), password=password), role=role)
     folder = os.getenv('SEED_DOCUMENTS_DIR', '')
     if folder and Path(folder).is_dir():
         with connect() as db:
@@ -63,9 +64,10 @@ app = FastAPI(title='Wayfarer Travel Guide API', version='1.0.0', lifespan=lifes
 async def same_origin(request: Request, call_next):
     if request.method not in ('GET', 'HEAD', 'OPTIONS'):
         origin = request.headers.get('origin')
-        allowed = os.getenv('APP_ORIGIN', 'http://localhost:5173').strip().rstrip('/')
-        if origin and origin != allowed:
-            return JSONResponse({'detail': f'Frontend address mismatch: browser sent {origin}, but backend allows {allowed}. Open the allowed address or set APP_ORIGIN to your browser origin and restart the backend.'}, status_code=403)
+        # APP_ORIGIN may list several comma-separated origins (e.g. Render and Vercel).
+        allowed = [o.strip().rstrip('/') for o in os.getenv('APP_ORIGIN', 'http://localhost:5173').split(',') if o.strip()]
+        if origin and origin.rstrip('/') not in allowed:
+            return JSONResponse({'detail': f'Frontend address mismatch: browser sent {origin}, but backend allows {", ".join(allowed)}. Open an allowed address or add your browser origin to APP_ORIGIN and restart the backend.'}, status_code=403)
     response = await call_next(request)
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
