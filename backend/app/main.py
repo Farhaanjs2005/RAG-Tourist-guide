@@ -32,14 +32,16 @@ def seed():
                 exists = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
             if not exists:
                 create_user(Registration(email=email, name=os.getenv(prefix + '_NAME', name), password=password), role=role)
+    # Every Markdown file in SEED_DOCUMENTS_DIR is a default document: it is
+    # (re)added at startup whenever no live document with that name exists.
     folder = os.getenv('SEED_DOCUMENTS_DIR', '')
     if folder and Path(folder).is_dir():
         with connect() as db:
-            if db.execute("SELECT COUNT(*) FROM documents WHERE status!='deleted'").fetchone()[0]:
-                return
             uploads = DATA / 'uploads'
             uploads.mkdir(parents=True, exist_ok=True)
-            for source in sorted(Path(folder).glob('[0-9]*.md')):
+            for source in sorted(Path(folder).glob('*.md')):
+                if db.execute("SELECT 1 FROM documents WHERE name=? AND status!='deleted'", (source.name,)).fetchone():
+                    continue
                 identity = uid()
                 target = uploads / (identity + '.md')
                 target.write_bytes(source.read_bytes())
